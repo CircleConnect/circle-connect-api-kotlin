@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - .:/app
+      - /app/target
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/circleConnect
+      - SPRING_DATASOURCE_USERNAME=circleUser
+      - SPRING_DATASOURCE_PASSWORD=circlePass
+      - SPRING_PROFILES_ACTIVE=dev
+
+  db:
+    image: postgres:13
+    environment:
+      - POSTGRES_DB=circleConnect
+      - POSTGRES_USER=circleUser
+      - POSTGRES_PASSWORD=circlePass
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d/
